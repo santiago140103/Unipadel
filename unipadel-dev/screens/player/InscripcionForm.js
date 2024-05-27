@@ -69,6 +69,7 @@ const InscripcionForm = ({ route }) => {
 
   // Función para hacer el guardado de la info en la base de datos y mostrar mensaje de aviso
   const handleStore = async () => {
+    console.log(pareja);
     if (pareja == 0) {
       Alert.alert(
         "¡Error!",

@@ -47,9 +47,9 @@ const TorneoForm = () => {
     precio: precio,
     descripcion: descripcion,
     // activo: activo,
-    fecha_inicio: inicio.toString(),
-    fecha_fin: fin.toString(),
-    fecha_limite: limite.toString(),
+    fecha_inicio: inicio ? moment(inicio).format('YYYY-MM-DDTHH:mm:ss') : '',
+    fecha_fin: fin ? moment(fin).format('YYYY-MM-DDTHH:mm:ss') : '',
+    fecha_limite: limite ? moment(limite).format('YYYY-MM-DDTHH:mm:ss') : '',
     organizador: organizador,
   };
 
@@ -201,7 +201,7 @@ const TorneoForm = () => {
           </TouchableOpacity>
           {showI && (
             <DateTimePicker
-              value={inicio ? inicio : new Date()}
+              value={inicio ? new Date(inicio) : new Date()}
               onChange={onChangeI}
               minimumDate={new Date()}
             />

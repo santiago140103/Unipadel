@@ -31,6 +31,8 @@ import PlayerTorneoScreen from "./screens/player/PlayerTournamentsScreen";
 import TorneoPartidosUsuario from "./screens/player/TorneoPartidosUsuario";
 import InscripcionForm from "./screens/player/InscripcionForm";
 
+import ChatPartidoScreen from "./screens/player/ChatPartidoScreen";
+
 const Stack = createNativeStackNavigator();
 LogBox.ignoreLogs([
   "AsyncStorage has been extracted from react-native core and will be removed in a future release",
@@ -127,6 +129,10 @@ export default function App() {
             <Stack.Screen
               name="ClasificacionTorneo"
               component={ClasificacionScreen}
+            ></Stack.Screen>
+            <Stack.Screen
+              name="ChatPartido"
+              component={ChatPartidoScreen}
             ></Stack.Screen>
           </Stack.Navigator>
         </NavigationContainer>

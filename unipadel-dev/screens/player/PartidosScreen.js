@@ -1,6 +1,7 @@
-import { StyleSheet, Text, View, FlatList, RefreshControl } from "react-native";
+import { StyleSheet, Text, View, FlatList, RefreshControl, TouchableOpacity } from "react-native";
 import React, { useState, useEffect, useContext } from "react";
 import SupNavbar from "../../components/supNavbar";
+import { useNavigation } from "@react-navigation/core";
 
 import { colores } from "../../colors";
 import { useIsFocused } from "@react-navigation/native";
@@ -11,6 +12,7 @@ import { UserContext } from "../../context/UserDataContext";
 
 const PartidosScreen = () => {
   const usercontext = useContext(UserContext);
+  const navigation = useNavigation();
 
   const [partidos, setPartidos] = useState([]);
   const [refresh, setRefresh] = useState(false);
@@ -35,7 +37,20 @@ const PartidosScreen = () => {
   }, [isFocusing]);
 
   const renderItem = ({ item }) => {
-    return <Partido partido={item} hasActions={false}></Partido>;
+    console.log("Log del renderItem : " + item.id);
+    return (
+      <View>
+        {/* Botón Chat */}
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => navigation.navigate("ChatPartido", item.id)}
+        >
+          <Text style={styles.buttonText}>Chat</Text>
+        </TouchableOpacity>
+        {/* Componente Partido */}
+        <Partido partido={item} hasActions={true}></Partido>
+      </View>
+    );
   };
 
   return (
@@ -43,7 +58,9 @@ const PartidosScreen = () => {
       <SupNavbar></SupNavbar>
       <Text style={styles.title}>Partidos</Text>
       <View style={styles.titleUnderline}></View>
+      
       <FlatList
+        
         data={partidos}
         keyExtractor={(item) => item.id}
         renderItem={renderItem}
@@ -79,5 +96,22 @@ const styles = StyleSheet.create({
   listado: {
     width: "100%",
     marginTop: 5,
+  },
+
+  buttonContainer: {
+    alignSelf: 'flex-end',
+    marginTop: 10,
+    marginRight: 10,
+    width: 1,
+  },
+  button: {
+    backgroundColor: 'blue',
+    paddingVertical: 8, // Aumenta el padding vertical para más espacio arriba y abajo
+    paddingHorizontal: 12, // Ajusta el padding horizontal para reducir la amplitud
+    borderRadius: 5,
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 14, // Reducimos el tamaño de la fuente
   },
 });

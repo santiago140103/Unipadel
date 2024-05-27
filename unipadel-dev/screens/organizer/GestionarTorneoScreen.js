@@ -24,9 +24,11 @@ const GestionarTorneoScreen = ({ route }) => {
   const getTorneo = async () => {
     const data = await getTorneos(id);
     setTorneo(data.data);
+    const formatted_fecha_inicio = data.data.fecha_inicio.replace(' ', 'T');
     setDias(
-      Math.round((new Date(data.data.fecha_inicio) - new Date()) / 86400000)
+      Math.round((new Date(formatted_fecha_inicio) - new Date()) / 86400000)
     );
+    console.log(torneo.calendario_generado);
   };
 
   const generateFixtures = async () => {
@@ -98,7 +100,8 @@ const GestionarTorneoScreen = ({ route }) => {
           </View>
         </View>
       )}
-      {torneo.calendario_generado ? (
+      
+      {torneo.calendario_generado == 1 ? (
         <TouchableOpacity
           style={[styles.calendarContainer, styles.shadow]}
           onPress={() =>

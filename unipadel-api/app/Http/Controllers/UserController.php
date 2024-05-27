@@ -114,7 +114,7 @@ class UserController extends Controller
 
         return response()->json([
             'status' => 200,
-            'message' => 'Pareja e integrantes añadidos correctamente',
+            'message' => 'Mensaje guardado correctamente',
         ]);
     }
 
@@ -153,7 +153,7 @@ class UserController extends Controller
 
         return response()->json([
             'status' => 200,
-            'message' => 'Pareja e integrantes añadidos correctamente',
+            'message' => 'Cancelacion guardada correctamente',
         ]);
     }
 
@@ -166,7 +166,7 @@ class UserController extends Controller
 
         return response()->json([
             'status' => 200,
-            'message' => 'Pareja e integrantes añadidos correctamente',
+            'message' => 'Cancelacion actualizada correctamente',
         ]);
     }
 

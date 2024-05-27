@@ -154,8 +154,13 @@ export const getMensajesPartido = async (idPartido) => {
   return await axios.get(`${api}getMensajesPartido/${idPartido}`);
 }
 
+export const getLastMensaje = async (request) => {
+  return await axios.get(`${api}getLastMensaje` + request);
+}
+
 export const saveMensaje = async (request) => {
-  return await axios.post(`${api}saveMensaje` + request);
+  console.log(request);
+  return await axios.post(`${api}saveMensaje`, request);
 }
 
 export const getCancelaciones = async (idUser) => {

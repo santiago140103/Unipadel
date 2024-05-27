@@ -35,10 +35,11 @@ const LoginScreen = () => {
         const res = await attemptLogin(user.email);
         if (res.data.data != null) {
           usuarioContext.setUser(res.data.data);
-          if (res.data.data.tipo === 1) {
-            console.log(res.data.data.tipo);
+          if (res.data.data.tipo === "1") {
+            console.log("Si eres organizador deberias entrar aqui. Tipo: " + res.data.data.tipo);
             navigation.replace("OrganizerHome");
           } else {
+            console.log("Si eres jugador deberia entrar aqui. Tipo: " + res.data.data.tipo);
             const par = await getParejas(user.email);
             usuarioContext.setParejas(par.data);
             navigation.replace("PlayerHome");

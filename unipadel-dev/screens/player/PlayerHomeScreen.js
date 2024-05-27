@@ -93,7 +93,7 @@ const PlayerHomeScreen = () => {
         <TouchableOpacity
           style={styles.button}
           onPress={() => {
-            navigation.push("InscripcionesUsuario");
+            navigation.push("InscripcionesUsuario"); //No esta implementada esta pagina
           }}
         >
           <Text style={styles.buttonText}>Mis inscripciones</Text>
@@ -101,10 +101,10 @@ const PlayerHomeScreen = () => {
         <TouchableOpacity
           style={styles.button}
           onPress={() => {
-            navigation.push("HistoricoPartidosUsuario");
+            navigation.push("HistoricoPartidosUsuario"); // No esta implementada esta pagina
           }}
         >
-          <Text style={styles.buttonText}>Histórico de resultados</Text>
+          <Text style={styles.buttonText}>Histórico de resultados</Text> 
         </TouchableOpacity>
       </ScrollView>
     </View>
