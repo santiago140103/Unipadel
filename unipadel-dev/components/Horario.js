@@ -11,20 +11,21 @@ const Horario = ({
   asignarPartido,
   proponerPartido,
 }) => {
+  
   const user = useContext(UserContext);
 
   return (
     <View
-      style={[styles.horario, horario.ocupado ? styles.ocupado : styles.libre]}
+      style={[styles.horario, horario.ocupado == 1 ? styles.ocupado : styles.libre]}
     >
       <TouchableOpacity
         style={[
           styles.estado,
-          horario.ocupado ? styles.ocupadoInd : styles.libreInd,
+          horario.ocupado == 1 ? styles.ocupadoInd : styles.libreInd,
         ]}
       >
         <Text style={styles.estText}>
-          {horario.ocupado ? "Ocupado" : "Libre"}
+          {horario.ocupado == 1 ? "Ocupado" : "Libre"}
         </Text>
       </TouchableOpacity>
       <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
@@ -47,7 +48,7 @@ const Horario = ({
           justifyContent: horario.ocupado == 1 ? "center" : "space-between",
         }}
       >
-        <Text style={styles.nombre}>{horario.cancha.nombre}</Text>
+        {/**<Text style={styles.nombre}>{horario.cancha.nombre}</Text>*/}
         {asignarPartido != null ? (
           <TouchableOpacity
             style={{
@@ -87,7 +88,7 @@ const Horario = ({
             </Text>
           </TouchableOpacity>
         ) : (
-          horario.ocupado == 0 && (
+          horario.ocupado == 1 && (
             <TouchableOpacity
               style={{
                 backgroundColor: colores.darkblue,

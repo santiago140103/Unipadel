@@ -2,7 +2,6 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
 const Mensaje = ({ mensaje }) => {
-    console.log(mensaje);
   return (
     <View style={styles.container}>
       <Text style={styles.content}>{mensaje.content}</Text>

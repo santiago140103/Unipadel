@@ -142,9 +142,11 @@ class PartidosController extends Controller
         return response()->json(['partidos'=>$partidos, 'partidos_conflicto'=>$partidos_conflicto], 200);
     }
 
+    //lleva el id del horario y partido, los llamados dentro de la request como horario y partido
     public function setHorarioPartido(Request $request)
     {
         $new_horario = Horario::find($request->horario);
+
         if ($new_horario->ocupado != 0) {
             return response()->json(['message' => 'El nuevo horario no se encuentra disponible'], 400);
         }

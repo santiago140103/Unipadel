@@ -42,7 +42,7 @@ const PartidosScreen = () => {
       <View>
         {/* Botón Chat */}
         <TouchableOpacity
-          style={styles.button}
+          style={styles.chatButton}
           onPress={() => navigation.navigate("ChatPartido", item.id)}
         >
           <Text style={styles.buttonText}>Chat</Text>
@@ -109,6 +109,17 @@ const styles = StyleSheet.create({
     paddingVertical: 8, // Aumenta el padding vertical para más espacio arriba y abajo
     paddingHorizontal: 12, // Ajusta el padding horizontal para reducir la amplitud
     borderRadius: 5,
+  },
+
+  chatButton: {
+    backgroundColor: 'blue',
+    paddingVertical: 8, // Aumenta el padding vertical para más espacio arriba y abajo
+    paddingHorizontal: 12, // Ajusta el padding horizontal para reducir la amplitud
+    borderRadius: 5,
+    marginTop: 30,
+    marginRight: 20,
+    alignSelf: 'flex-end',
+    width: '15%',
   },
   buttonText: {
     color: 'white',

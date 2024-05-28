@@ -174,8 +174,7 @@ class TorneoController extends Controller
     }
 
 
-    public function createRecurso(Request $request)
-    {
+    public function createRecurso(Request $request) {
         $cancha = new Cancha();
         $cancha->id_torneo = $request->torneo;
         $cancha->nombre = $request->cancha;
@@ -186,10 +185,11 @@ class TorneoController extends Controller
         $fecha_fin_torneo = strtotime($torneo->fecha_fin);
 
         foreach ($request->horarios as $h) {
-
+            //$formatted_fecha_inicio = $h['fechainicio'] . ' ' . ;
+            $fecha_inicio = Carbon::createFromFormat('Y-m-d H:i:s', '2024-07-08 10:00:00')->format('Y-m-d H:i:s.000');
             $fecha_inicio = strtotime($h['fechaInicio']);
             $fecha_fin = strtotime($h['fechaFin']);
-
+            print_r($fecha_inicio);
             $turno = $this->getDuracionTurno($h['inicio'], $h['fin'], $h['turnos']);
 
             $hora = $h['inicio'];
@@ -198,6 +198,7 @@ class TorneoController extends Controller
 
             if ($h['lunes']) {
                 $recursos = $this->createRecursosDay($fecha_inicio, $fecha_fin, $hora, $turnos, $turno, 'monday', $fecha_inicio_torneo, $fecha_fin_torneo);
+                print_r($recursos);
                 foreach ($recursos as $recurso) {
                     array_push($horarios, $recurso);
                 }
@@ -242,8 +243,18 @@ class TorneoController extends Controller
             foreach ($horarios as $horario) {
                 $hor = new Horario();
                 $hor->id_cancha = $cancha->id;
-                $hor->inicio = date('Y-m-d H:i:s', strtotime($horario['inicio']));
-                $hor->fin = date('Y-m-d H:i:s', strtotime($horario['fin']));
+                //Añadido formateo
+                $formattedInicio = Carbon::parse($horario['inicio'])->format('Y-m-d H:i:s.000');
+                $formattedInicio = str_replace(' ', 'T', $formattedInicio);
+                $formattedFin = Carbon::parse($horario['fin'])->format('Y-m-d H:i:s.000');
+                $formattedFin = str_replace(' ', 'T', $formattedFin);
+                print_r("\nInicio formateado: " . $formattedInicio . "\nFin formateado: " . $formattedFin);
+
+
+                $hor->inicio = $formattedInicio; //date('Y-m-d H:i:s', strtotime($horario['inicio']));
+                $hor->fin = $formattedFin; //date('Y-m-d H:i:s', strtotime($horario['fin']));
+                print_r('Horario inicio: ' . $hor->inicio);
+                print_r('Horario fin: ' . $hor->fin);
                 $hor->save();
             }
         }
@@ -271,6 +282,7 @@ class TorneoController extends Controller
                 array_push($horarios, $horario);
             }
         }
+        print_r($horarios);
         return $horarios;
     }
 
@@ -649,25 +661,34 @@ class TorneoController extends Controller
     }
 
     public function getHorariosTorneo($id, $isTorneo)
-    {
+    {   
+        //horario para hacer la comparacion
+        $horario_actual = Carbon::now()->toDateTimeString();
+        $horario_actual = str_replace(' ', 'T', $horario_actual);
         $horariosArr = [];
+
         if ($isTorneo == "true") {
             $canchas = Cancha::where('id_torneo', $id)->get();
             foreach ($canchas as $cancha) {
-                $horarios = Horario::where('id_cancha', $cancha->id)->where('inicio', '>=', Carbon::now()->toDateTimeString())->orderBy('inicio', 'asc')->with('cancha:id,nombre')->get();
+                $horarios = Horario::where('id_cancha', $cancha->id)
+                ->where('inicio', '>=', $horario_actual)
+                ->orderBy('inicio', 'asc')->with('cancha:id,nombre')
+                ->get();
                 foreach ($horarios as $horario) {
                     array_push($horariosArr, $horario);
                 }
             }
         } else {
-            $horarios = Horario::where('id_cancha', $id)->where('inicio', '>=', Carbon::now()->toDateTimeString())->orderBy('inicio', 'asc')->with('cancha:id,nombre')->get();
+            $horarios = Horario::where('id_cancha', $id)
+            ->where('inicio', '>=', $horario_actual)
+            ->orderBy('inicio', 'asc')
+            ->with('cancha:id,nombre')
+            ->get();
             foreach ($horarios as $horario) {
                 array_push($horariosArr, $horario);
             }
-            print_r("Hola, ahi van los horarios");
             
         }
-        print_r($horariosArr);
 
         return response()->json($horariosArr);
     }

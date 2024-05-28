@@ -25,7 +25,6 @@ const ChatPartido = () => {
     };
 
     useEffect(() => {
-        console.log("Partido: " + route.params);
         getMensajes();
         
       }, [isFocusing]);

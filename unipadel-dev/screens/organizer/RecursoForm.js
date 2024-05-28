@@ -132,6 +132,7 @@ const RecursoForm = ({ route }) => {
     setHorarios(reducedArr);
   };
 
+  
   const handleAgregarHorario = () => {
     let horario = {
       inicio: moment(inicio).format("HH:mm"),
@@ -416,7 +417,7 @@ const RecursoForm = ({ route }) => {
         </View>
 
         <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.button} onPress={() => handleStore()}>
+          <TouchableOpacity style={styles.button} onPress={() => handleStore()}> 
             <Text style={styles.buttonText}>Crear recurso</Text>
           </TouchableOpacity>
           <TouchableOpacity

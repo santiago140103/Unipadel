@@ -65,6 +65,10 @@ const HorariosTorneoScreen = ({ route }) => {
   const loadHorarios = async () => {
     const data = await getHorariosTorneo(request, route.params.isTorneo);
     setHorarios(data.data);
+    console.log('Horarios: ' + horarios);
+    console.log('Data.data: ' + data.data);
+    console.log(request);
+    console.log(route.params.isTorneo);
   };
 
   const onRefresh = React.useCallback(async () => {
@@ -75,7 +79,7 @@ const HorariosTorneoScreen = ({ route }) => {
 
   useEffect(() => {
     loadHorarios();
-  }, [isFocusing]);
+  }, );
 
   return (
     <View style={styles.container}>
