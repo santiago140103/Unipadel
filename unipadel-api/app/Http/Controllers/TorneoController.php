@@ -712,10 +712,18 @@ class TorneoController extends Controller
 
     public function getHorariosDisponibles($id)
     {
+        $horario_actual = Carbon::now()->toDateTimeString();
+        $horario_actual = str_replace(' ', 'T', $horario_actual);
         $horariosArr = [];
         $canchas = Cancha::where('id_torneo', $id)->get();
         foreach ($canchas as $cancha) {
-            $horarios = Horario::where('ocupado', 0)->where('id_cancha', $cancha->id)->where('inicio', '>=', Carbon::now()->toDateTimeString())->orderBy('inicio', 'asc')->with('cancha:id,nombre')->get();
+            $horarios = Horario::where('ocupado', 0)
+            ->where('id_cancha', $cancha->id)
+            ->where('inicio', '>=', $horario_actual)
+            ->orderBy('inicio', 'asc')
+            ->with('cancha:id,nombre')
+            ->get();
+            
             foreach ($horarios as $horario) {
                 array_push($horariosArr, $horario);
             }
