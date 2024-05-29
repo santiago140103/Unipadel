@@ -79,7 +79,7 @@ const ChatPartido = () => {
             idTorneo: idTorneo,
             idPartido: route.params
           };
-          
+          console.log(mensajeParaChatbot);
           await chatBot(requestChatBot);
           await actualizarMensajes();
             

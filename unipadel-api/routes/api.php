@@ -58,12 +58,14 @@ Route::get('rechazarResultado/{partido}', [PartidosController::class, 'rechazarR
 
 Route::get('getMensajesPartido/{idPartido}', [UserController::class, 'getMensajesPartido']);
 Route::post('saveMensaje', [UserController::class, 'saveMensaje']);
-Route::get('getTorneoIdWithPartidoId/{idPartido}', [TorneoController::class, 'getTorneoIdWithPartidoId']);
-Route::get('getUserById/{idUser}', [UserController::class, 'getUserById']);
 
 Route::get('getCancelaciones/{idUser}', [UserController::class, 'getCancelaciones']);
 Route::post('saveCancelacion', [UserController::class, 'saveCancelacion']);
 Route::put('updateEstadoCancelacion', [UserController::class, 'updateEstadoCancelacion']);
+
+Route::get('getTorneoIdWithPartidoId/{idPartido}', [TorneoController::class, 'getTorneoIdWithPartidoId']);
+Route::get('getUserById/{idUser}', [UserController::class, 'getUserById']);
+Route::get('getParejaIdByUserIdAndPartidoId/{idPartido}/{uidSender}', [UserController::class, 'getParejaIdByUserIdAndPartidoId']);
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();

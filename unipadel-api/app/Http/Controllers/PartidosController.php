@@ -198,7 +198,7 @@ class PartidosController extends Controller
     {
         $partido = Partido::find($p);
 
-        if($partido->horario_id != null){
+        if($partido->horario_id != null) {
             $horario_actual = Horario::find($partido->horario_id);
             $horario_actual->ocupado = 0;
             $horario_actual->save();

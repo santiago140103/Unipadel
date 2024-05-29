@@ -30,3 +30,8 @@ def saveMensaje(id_partido:int, content:str):
     data = {'uidSender': chatBot_uid, 'idPartido': id_partido, 'content': content}
     response = requests.post(url, data)
     return response.json()
+
+def isPartidoWithHorario(idPartido:int):
+    url = f"{base_url}isPartidoWithHorario/{idPartido}"
+    response = requests.get(url)
+    return response

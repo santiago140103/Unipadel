@@ -44,7 +44,7 @@ def handleMessage(data):
     result, answer = manage_auto_response(data)
     #if result:
     if isinstance(answer, str):
-        
+        print(answer)
         saveMensaje(data['idPartido'], answer)
         return {'message': answer}
     
@@ -119,6 +119,9 @@ def book(data):
     if check_reservar_format(data['mensaje']) == False:
         return "El formato para reservar es 'Reservar yyyy-mm-dd hh:mm'"
     
+    #chequear si el partido ya tiene reserva 
+    if (isPartidoWithHorario(data['idPartido'])):
+        return "El partido ya tiene un horario. Si quieres cambiar el horario debes cancelarlo primero, sabiendo que si incumples la politica de cancelacion debes contactar al organizador."
     key_words = data['mensaje'].split(' ')
 
     #Obtener la disponibilidad del dia
