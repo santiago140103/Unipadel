@@ -1,7 +1,7 @@
 import requests
 
 base_url = "http://127.0.0.1:8000/api/"
-chatBot_uid = 12
+chatBot_uid = 10002
 
 
 def get_availability(id):

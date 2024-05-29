@@ -96,6 +96,11 @@ class UserController extends Controller
 
         return $parejas;
     }
+    //Get user by id
+    public function getUserById($id) {
+        $user = User::where('id', $id)->get();
+        return $user;
+    }
 
     //Proporciona los mensajes referentes a un partido. GET
     public function getMensajesPartido($idPartido) {

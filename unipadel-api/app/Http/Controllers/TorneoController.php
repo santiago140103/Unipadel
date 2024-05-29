@@ -730,4 +730,9 @@ class TorneoController extends Controller
         }
         return response()->json($horariosArr);
     }
+    //Devuelve una lista de un elemento de tipo str que es el id del torneo
+    public function getTorneoIdWithPartidoId($id) {
+        $id = Partido::where('id', $id)->get()->pluck('torneo_id');
+        return $id;
+    }
 }

@@ -58,6 +58,8 @@ Route::get('rechazarResultado/{partido}', [PartidosController::class, 'rechazarR
 
 Route::get('getMensajesPartido/{idPartido}', [UserController::class, 'getMensajesPartido']);
 Route::post('saveMensaje', [UserController::class, 'saveMensaje']);
+Route::get('getTorneoIdWithPartidoId/{idPartido}', [TorneoController::class, 'getTorneoIdWithPartidoId']);
+Route::get('getUserById/{idUser}', [UserController::class, 'getUserById']);
 
 Route::get('getCancelaciones/{idUser}', [UserController::class, 'getCancelaciones']);
 Route::post('saveCancelacion', [UserController::class, 'saveCancelacion']);

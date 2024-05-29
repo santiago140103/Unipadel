@@ -38,14 +38,17 @@ class MessageController(Resource):
         return response
 
         
-
+#========================Funciones de manejo====================================
 def handleMessage(data):
     
     result, answer = manage_auto_response(data)
-
     #if result:
     if isinstance(answer, str):
+        
+        saveMensaje(data['idPartido'], answer)
         return {'message': answer}
+    
+    
     
     return answer
     #else:
@@ -56,7 +59,7 @@ def handleMessage(data):
         #return #response1
     
     #result, answer = manage_auto_response(message)
-
+    saveMensaje(data['idPartido'], answer)
     return 
 
 def manage_auto_response(data):
@@ -127,7 +130,6 @@ def book(data):
         return "No se ha podido reservar porque no hay horarios para ese dia"
     
     id = 0
-    print(horarios)
     for horario in horarios:
         horario_proporcionado = f"{key_words[1]} {key_words[2]}:00.000"
         if horario['inicio'] == horario_proporcionado:
@@ -138,8 +140,8 @@ def book(data):
         return f"El horario proporcionado para ese dia no existe o no esta disponible. Los horarios disponibles para ese dia son:\n{str_horarios(horarios)}"
     
     #Hacer la reserva
-    response = setHorarioPartido(id, data['partido'])
-    return response
+    response = setHorarioPartido(id, data['idPartido'])
+    return response['message']
 
 def check_reservar_format(mensaje):
     key_words = mensaje.split(' ')
@@ -164,7 +166,7 @@ def cancel(words):
     #get_horario_reservado para el partido
     scheduled_day = "14/04/2024"
     scheduled_time = "10:00"
-    print(day + time)
+    
 
     #Condiciones de cancelacion
 
@@ -213,7 +215,6 @@ def str_horarios(horarios):
     if isinstance(horarios, str):
         return horarios
     if 'message' in horarios:
-        print("Entró")
         return horarios
     
     str_horarios = ""

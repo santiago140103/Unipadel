@@ -3,7 +3,7 @@ import { View, TouchableOpacity, Text, StyleSheet, KeyboardAvoidingView, TextInp
 import { useRoute } from "@react-navigation/native";
 import Mensaje from "../../components/Mensaje";
 
-import { getMensajesPartido, saveMensaje } from '../../api';
+import { chatBot, getMensajesPartido, saveMensaje, getTorneoIdWithPartidoId } from '../../api';
 import { useIsFocused } from "@react-navigation/native";
 
 import { UserContext } from "../../context/UserDataContext";
@@ -41,15 +41,7 @@ const ChatPartido = () => {
         return;
       };
 
-      const enviarMensaje = async () => {
-        let request = {
-            uidSender: usercontext.user.id,
-            idPartido: route.params,
-            content: content
-        };
-        await saveMensaje(request);
-
-        //actualizar mensajes
+      const actualizarMensajes = async () => {
         const nuevosMensajes = await getMensajesPartido(route.params);
         const allMensajes = [...mensajes, ...nuevosMensajes.data];
         const uniqueMensajes = Array.from(new Set(allMensajes.map(m => m.id)))
@@ -65,9 +57,42 @@ const ChatPartido = () => {
           }, 0);
       }
 
+      const enviarMensaje = async () => {
+        let request = {
+            uidSender: usercontext.user.id,
+            idPartido: route.params,
+            content: content
+        };
+        await saveMensaje(request);
+        //actualizar mensajes
+        await actualizarMensajes();
+
+        //Si el mensaje es para el chatBot
+        
+        if (content.startsWith('@chatbot')) {
+          const mensajeParaChatbot = content.slice('@chatbot'.length).trim();
+          const data = await getTorneoIdWithPartidoId(route.params);
+          const idTorneo = parseInt(data.data[0], 10);
+
+          let requestChatBot = {
+            mensaje: mensajeParaChatbot,
+            idTorneo: idTorneo,
+            idPartido: route.params
+          };
+          
+          await chatBot(requestChatBot);
+          await actualizarMensajes();
+            
+        }
+        
+      }
+
   return (
     <View style={styles.container}>
-      
+      <View style={styles.header}>
+        <Text style={styles.headerText}>Chat</Text>
+      </View>
+
       <FlatList
         style = {styles.FlatList}
         ref={flatListRef}
@@ -97,6 +122,24 @@ const ChatPartido = () => {
 };
 
 const styles = StyleSheet.create({
+  header: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    height: 70,
+    backgroundColor: 'white',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 1, // Asegura que el encabezado esté por encima de otros elementos
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+  },
+  headerText: {
+    fontSize: 24,
+    fontWeight: 'bold',
+  },
+
   container: {
     flex: 1,
     justifyContent: 'flex-end',
@@ -105,6 +148,7 @@ const styles = StyleSheet.create({
 
   FlatList: {
     marginBottom: 50,
+    marginTop: 75,
   },
   
   sendButton: {

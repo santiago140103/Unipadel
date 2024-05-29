@@ -1,12 +1,27 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
+import { getUserById } from '../api';
+
 const Mensaje = ({ mensaje }) => {
+
+  const [username, setUsername] = useState("");
+
+  const getUser = async () => {
+    const user = await getUserById(mensaje.uidSender);
+    setUsername(user.data[0].name);
+  }
+
+  useEffect(() => {
+    getUser();
+    
+  },);
+
   return (
     <View style={styles.container}>
+      <Text style={styles.sender}>{username}</Text>
       <Text style={styles.content}>{mensaje.content}</Text>
       <Text style={styles.date}>{mensaje.date}</Text>
-      <Text style={styles.sender}>{mensaje.uidSender}</Text>
     </View>
   );
 };

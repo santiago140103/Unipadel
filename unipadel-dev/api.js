@@ -1,6 +1,7 @@
 import axios from "axios";
 
 const api = "http://10.0.2.2:8000/api/";
+const apiChatBot = "http://10.0.2.2:8080/api/chat";
 
 export const getTorneos = async (id) => {
   if (id) {
@@ -168,9 +169,22 @@ export const getCancelaciones = async (idUser) => {
 }
 
 export const saveCancelacion = async (request) => {
-  return await axios.post(`${api}saveCancelacion/` + request);
+  return await axios.post(`${api}saveCancelacion/`, request);
 }
 
 export const updateEstadoCancelacion = async (request) => {
-  return await axios.put(`${api}updateEstadoCancelacion/` + request);
+  return await axios.put(`${api}updateEstadoCancelacion/`, request);
+}
+
+export const getTorneoIdWithPartidoId = async (idPartido) => {
+  return await axios.get(`${api}getTorneoIdWithPartidoId/${idPartido}`);
+}
+
+export const getUserById = async (idUser) => {
+  return await axios.get(`${api}getUserById/${idUser}`);
+} 
+
+//Chat bot
+export const chatBot = async (request) => {
+  return await axios.post(`${apiChatBot}`, request)
 }
