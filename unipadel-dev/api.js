@@ -152,6 +152,7 @@ export const getResultadosTorneo = async (id) => {
 }
 //
 export const getMensajesPartido = async (idPartido) => {
+  console.log('Get mensajes partido log');
   return await axios.get(`${api}getMensajesPartido/${idPartido}`);
 }
 
@@ -160,7 +161,7 @@ export const getLastMensaje = async (request) => {
 }
 
 export const saveMensaje = async (request) => {
-  console.log(request);
+  console.log('savemensaje');
   return await axios.post(`${api}saveMensaje`, request);
 }
 
@@ -177,14 +178,17 @@ export const updateEstadoCancelacion = async (request) => {
 }
 
 export const getTorneoIdWithPartidoId = async (idPartido) => {
+  console.log('get torneo id');
   return await axios.get(`${api}getTorneoIdWithPartidoId/${idPartido}`);
 }
 
 export const getUserById = async (idUser) => {
+  console.log('get user by id');
   return await axios.get(`${api}getUserById/${idUser}`);
 } 
 
 //Chat bot
 export const chatBot = async (request) => {
+  console.log('chatbot');
   return await axios.post(`${apiChatBot}`, request)
 }

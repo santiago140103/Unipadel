@@ -62,7 +62,10 @@ Route::post('saveMensaje', [UserController::class, 'saveMensaje']);
 Route::get('getCancelaciones/{idUser}', [UserController::class, 'getCancelaciones']);
 Route::post('saveCancelacion', [UserController::class, 'saveCancelacion']);
 Route::put('updateEstadoCancelacion', [UserController::class, 'updateEstadoCancelacion']);
+Route::get('getHorarioPartido/{idPartido}', [PartidosController::class, 'getHorarioPartido']);
+Route::post('cancelWithNoPenalty', [UserController::class, 'cancelWithNoPenalty']);
 
+Route::get('getParejaId/{uidSender}/{idPartido}', [UserController::class, 'getParejaId']);
 Route::get('getTorneoIdWithPartidoId/{idPartido}', [TorneoController::class, 'getTorneoIdWithPartidoId']);
 Route::get('getUserById/{idUser}', [UserController::class, 'getUserById']);
 Route::get('getParejaIdByUserIdAndPartidoId/{idPartido}/{uidSender}', [UserController::class, 'getParejaIdByUserIdAndPartidoId']);

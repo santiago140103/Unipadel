@@ -35,3 +35,32 @@ def isPartidoWithHorario(idPartido:int):
     url = f"{base_url}isPartidoWithHorario/{idPartido}"
     response = requests.get(url)
     return response
+
+def getHorarioPartido(idPartido: int):
+    url = f"{base_url}getHorarioPartido/{idPartido}"
+    response = requests.get(url)
+    return response
+
+def getTorneo(idTorneo: int):
+    url = f"{base_url}getTorneo/{idTorneo}"
+    response = requests.get(url)
+    return response
+
+def saveCancelacion(id_partido:int, id_pareja):
+    url = f"{base_url}saveCancelacion"
+    data = {'idPareja': id_pareja, 'idPartido': id_partido}
+    response = requests.post(url, data)
+    return response.json()
+
+#Falta probar
+def cancelWithNoPenalty(id_partido:int):
+    url = f"{base_url}saveCancelacion"
+    data = {'idPartido': id_partido}
+    response = requests.post(url, data)
+    return response.json()
+
+#Falta implementar
+def getParejaId(uidSender:int, idPartido:int):
+    url = f"{base_url}getParejaId/{uidSender}/{idPartido}"
+    response = requests.get(url)
+    return response.json()

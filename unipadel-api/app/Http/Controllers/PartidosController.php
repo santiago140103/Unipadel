@@ -301,4 +301,10 @@ class PartidosController extends Controller
 
         $partido->save();
     }
+
+    public function getHorarioPartido($id) {
+        $horario_id = Partido::where('id', $id)->first()->horario_id;
+        $horario = Horario::where('id', intval($horario_id))->first();
+        return response()->json($horario);
+    }
 }

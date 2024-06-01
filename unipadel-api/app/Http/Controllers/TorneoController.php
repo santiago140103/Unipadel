@@ -59,6 +59,7 @@ class TorneoController extends Controller
         $torneo->max_parejas = $request->max_jugadores;
         $torneo->precio = $request->precio;
         $torneo->descripcion = $request->descripcion;
+        $torneo->politica_cancelacion = $request->politica_cancelacion;
         // $torneo->estado = $request->activo;
         $torneo->organizador_id = $organizador_id;
 

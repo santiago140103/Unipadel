@@ -173,22 +173,43 @@ class UserController extends Controller
         return $cancelaciones;
     }
 
-    //Guardar una cancelacion
-    public function saveCancelacion(Request $request) {
-
-        $partidos = Partido::where('id', $request->idPartido)->first(); 
-
+    public function cancelWithNoPenalty(Request $request) {
+        $partido = Partido::where('id', $request->idPartido)->first(); 
+    
+        if (!$partido) {
+            return response()->json([
+                'status' => 404,
+                'message' => 'Partido no encontrado',
+            ]);
+        }
+    
         //poner el horario de ocupado a libre
         $horario = Horario::where('id', $partido->horario_id)->first(); 
+        if (!$horario) {
+            return response()->json([
+                'status' => 404,
+                'message' => 'Horario no encontrado',
+            ]);
+        }
+    
         $horario->ocupado = 0;
         $horario->save();
-        print($horario);
-
+    
         //poner el horario del partido a null
         $partido->horario_id = NULL;
         $partido->save();
-        print($partido);
-
+    
+        return response()->json([
+            'status' => 200,
+            'message' => 'Partido cancelado correctamente',
+        ]);
+    }
+    
+    public function saveCancelacion(Request $request) {
+        $response = $this->cancelWithNoPenalty($request);
+    
+        // Verificar si la cancelación fue exitosa
+        
         //guardar cancelacion
         $cancelacion = new Cancelacion();
         $cancelacion->idPareja = $request->idPareja;
@@ -196,14 +217,14 @@ class UserController extends Controller
         $cancelacion->date = date('Y-m-d H:i'); //modificar como se hizo en los otros metodos para que no de error de conversion
         $cancelacion->estado = $request->estado;
         $cancelacion->save();
-
+    
         return response()->json([
             'status' => 200,
             'message' => 'Cancelacion guardada correctamente',
         ]);
     }
+    
 
-    //PROBAR
     //Modificar el estado de una cancelacion 
     public function updateEstadoCancelacion(Request $request) {
         $cancelaciones = Cancelacion::where('id', $request->id)->get();
@@ -214,6 +235,26 @@ class UserController extends Controller
         return response()->json([
             'status' => 200,
             'message' => 'Cancelacion actualizada correctamente',
+        ]);
+    }
+
+    public function getParejaId($uidSender, $idPartido) {
+        $integrantes = Integrante::where('id_jugador', $uidSender)->get();
+
+        print($integrantes);
+
+        
+        $partido = Partido::where('id', $idPartido)->first();
+        $idPareja = 0;
+        foreach ($integrantes as $integrante) {
+            print($integrante->id_pareja);
+            if ($integrante->id_pareja == $partido->p1 or $partido->p2) {
+                $idPareja = $integrante->id_pareja;
+            }
+        }
+
+        return response()->json([
+            'idPareja' => $idPareja 
         ]);
     }
 

@@ -92,7 +92,9 @@ def get_horarios(data):
                 horarios_del_dia.append(horario)
 
         if len(horarios_del_dia) == 0:
+            print("Entra horarios del dia es 0")
             return "No hay disponibilidad para ese dia"
+        
         return horarios_del_dia
         
 
@@ -161,23 +163,40 @@ def check_reservar_format(mensaje):
     return True
 
 
-def cancel(words):
+def cancel(data):
     #Cancela si tienen reserva a esa hora ese dia
-    day = words[1]
-    time = words[2]
+    if check_disponibilidad_format(data) == False:
+        return "El formato para la cancelacion es 'Cancelar'."
 
     #get_horario_reservado para el partido
-    scheduled_day = "14/04/2024"
-    scheduled_time = "10:00"
+    if (isPartidoWithHorario(data['idPartido']) == False):
+        return "El partido aun no tiene horario asignado."
     
 
     #Condiciones de cancelacion
+    horario = getHorarioPartido(data['idPartido'])
+    torneo = getTorneo(data['idTorneo'])
 
+    inicio_datetime = datetime.strptime(horario["inicio"], "%Y-%m-%d %H:%M:%S.%f")
 
-    if scheduled_time == time and scheduled_day == day:
-        return "Cancelado"
+    # Obtener la hora actual
+    hora_actual = datetime.now()
 
-    return "No se pudo cancelar por x"
+    # Calcular la diferencia en horas
+    diferencia_horas = (inicio_datetime - hora_actual).total_seconds() / 3600
+
+    #Si esta muy cerca del partido se guarda la cancelacion
+    if diferencia_horas < torneo['politica_cancelacion']:
+        pareja_id = getParejaId(data['uidSender'], data['idPartido'])
+        saveCancelacion(data['idPartido'], pareja_id)
+        return "El partido se ha cancelado con exito, pero se ha incumplido la politica de cancelacion. Contacte con el organizador para agestionarla."
+
+    else:
+        cancelWithNoPenalty(data['idPartido'])
+        return "El partido se ha cancelado con exito."
+    
+
+    
 
 
 def check_date_format(date):
@@ -230,38 +249,5 @@ def str_horarios(horarios):
     return str_horarios
 
 if __name__ == '__main__':
-    str_horarios({'message': 'Horario asignado con éxito'})
     app.run(host='0.0.0.0',port=8080, debug=True)
 
-"""
-def question():
-    question = request.args.get("question")
-    print(question + "Se acabó la pregunta")
-    response1 = ''
-    result, answer = manage_auto_response(question)
-
-    if result:
-        print(answer)
-        return answer
-    else:
-        with model.chat_session(system_template, prompt_template):
-            response1 = model.generate(question)
-
-        return response1
-
-def question2(string):
-    question = string
-    print(question + " Se acabó la pregunta")
-    response1 = ''
-    result, answer = manage_auto_response(question)
-    print()
-    if result:
-        print("Respuesta:\n" + str(answer))
-        return answer
-    else:
-        with model.chat_session(system_template, prompt_template):
-            response1 = model.generate(question)
-
-        return response1
-        print(response1 + "eu")
-"""

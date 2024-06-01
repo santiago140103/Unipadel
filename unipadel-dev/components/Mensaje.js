@@ -15,7 +15,7 @@ const Mensaje = ({ mensaje }) => {
   useEffect(() => {
     getUser();
     
-  },);
+  },[mensaje.uidSender]);
 
   return (
     <View style={styles.container}>
