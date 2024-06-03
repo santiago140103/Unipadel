@@ -32,6 +32,7 @@ import TorneoPartidosUsuario from "./screens/player/TorneoPartidosUsuario";
 import InscripcionForm from "./screens/player/InscripcionForm";
 
 import ChatPartidoScreen from "./screens/player/ChatPartidoScreen";
+import GestionarCancelacionesScreen from "./screens/organizer/GestionarCancelacionesScreen";
 
 const Stack = createNativeStackNavigator();
 LogBox.ignoreLogs([
@@ -133,6 +134,10 @@ export default function App() {
             <Stack.Screen
               name="ChatPartido"
               component={ChatPartidoScreen}
+            ></Stack.Screen>
+            <Stack.Screen
+              name="GestionarCancelaciones"
+              component={GestionarCancelacionesScreen}
             ></Stack.Screen>
           </Stack.Navigator>
         </NavigationContainer>

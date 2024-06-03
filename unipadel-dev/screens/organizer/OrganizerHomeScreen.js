@@ -125,6 +125,14 @@ const OrganizerHomeScreen = () => {
       >
         <Text style={styles.buttonText}>Competiciones creadas</Text>
       </TouchableOpacity>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => {
+          navigation.push("GestionarCancelaciones", usercontext.user.id);
+        }}
+      >
+        <Text style={styles.buttonText}>Cancelaciones</Text>
+      </TouchableOpacity>
     </View>
   );
 };

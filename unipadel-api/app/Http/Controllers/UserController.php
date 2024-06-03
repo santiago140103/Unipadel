@@ -245,4 +245,25 @@ class UserController extends Controller
         ]);
     }
 
+    public function getParejaData($idPareja) {
+        $pareja = Pareja::where('id', $idPareja)->first();
+
+        return response()->json($pareja);
+    }
+
+    public function getUsuariosCancelacion($idPareja) {
+        // Suponiendo que Integrante::where('id', $idPareja) retorna varios integrantes
+        $integrantes = Integrante::where('id_pareja', $idPareja)->get();
+        $users = [];
+        foreach ($integrantes as $integrante) {
+            $user = User::where('id', $integrante->id_jugador)->first();
+            if ($user) {
+                $users[] = $user; 
+            }
+        }
+    
+        return response()->json($users);
+    }
+    
+
 }

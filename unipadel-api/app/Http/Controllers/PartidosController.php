@@ -322,4 +322,5 @@ class PartidosController extends Controller
             'is' => $is 
         ]);
     }
+    
 }
