@@ -64,6 +64,7 @@ def handleMessage(data):
 
 def manage_auto_response(data):
     key_words = data['mensaje'].split()
+    print('Data del request: ' + str(data))
 
     if key_words[0] == "Disponibilidad":
         return True, str_horarios(get_horarios(data))
@@ -92,7 +93,6 @@ def get_horarios(data):
                 horarios_del_dia.append(horario)
 
         if len(horarios_del_dia) == 0:
-            print("Entra horarios del dia es 0")
             return "No hay disponibilidad para ese dia"
         
         return horarios_del_dia
@@ -165,30 +165,34 @@ def check_reservar_format(mensaje):
 
 def cancel(data):
     #Cancela si tienen reserva a esa hora ese dia
-    if check_disponibilidad_format(data) == False:
+    if check_cancel_format(data['mensaje']) == False:
         return "El formato para la cancelacion es 'Cancelar'."
 
     #get_horario_reservado para el partido
     if (isPartidoWithHorario(data['idPartido']) == False):
         return "El partido aun no tiene horario asignado."
     
+    #Comprobar si el partido ya se jugo
+
 
     #Condiciones de cancelacion
     horario = getHorarioPartido(data['idPartido'])
     torneo = getTorneo(data['idTorneo'])
 
-    inicio_datetime = datetime.strptime(horario["inicio"], "%Y-%m-%d %H:%M:%S.%f")
+    inicio_datetime = datetime.datetime.strptime(horario["inicio"], "%Y-%m-%d %H:%M:%S.%f")
 
     # Obtener la hora actual
-    hora_actual = datetime.now()
+    hora_actual = datetime.datetime.now()
 
     # Calcular la diferencia en horas
     diferencia_horas = (inicio_datetime - hora_actual).total_seconds() / 3600
 
     #Si esta muy cerca del partido se guarda la cancelacion
-    if diferencia_horas < torneo['politica_cancelacion']:
+    if diferencia_horas < int(torneo['politica_cancelacion']):
         pareja_id = getParejaId(data['uidSender'], data['idPartido'])
-        saveCancelacion(data['idPartido'], pareja_id)
+        print('Llega a cancelacion')
+        saveCancelacion(data['idPartido'], pareja_id['idPareja'])
+        print('Despues de la cancelacion')
         return "El partido se ha cancelado con exito, pero se ha incumplido la politica de cancelacion. Contacte con el organizador para agestionarla."
 
     else:
@@ -196,7 +200,15 @@ def cancel(data):
         return "El partido se ha cancelado con exito."
     
 
+def check_cancel_format(mensaje):
+    words = mensaje.split(' ')
+    if len(words) != 1:
+        return False
     
+    if words[0] != "Cancelar":
+        return False
+    
+    return True
 
 
 def check_date_format(date):
@@ -237,7 +249,7 @@ def str_horarios(horarios):
     if isinstance(horarios, str):
         return horarios
     if 'message' in horarios:
-        return horarios
+        return horarios['message']
     
     str_horarios = ""
     for horario in horarios:

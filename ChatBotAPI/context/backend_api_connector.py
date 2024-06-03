@@ -34,17 +34,21 @@ def saveMensaje(id_partido:int, content:str):
 def isPartidoWithHorario(idPartido:int):
     url = f"{base_url}isPartidoWithHorario/{idPartido}"
     response = requests.get(url)
-    return response
+
+    #0 false, 1 true
+    if response.json()['is'] == 1:
+        return True
+    return False
 
 def getHorarioPartido(idPartido: int):
     url = f"{base_url}getHorarioPartido/{idPartido}"
     response = requests.get(url)
-    return response
+    return response.json()
 
 def getTorneo(idTorneo: int):
     url = f"{base_url}getTorneo/{idTorneo}"
     response = requests.get(url)
-    return response
+    return response.json()
 
 def saveCancelacion(id_partido:int, id_pareja):
     url = f"{base_url}saveCancelacion"
@@ -54,7 +58,7 @@ def saveCancelacion(id_partido:int, id_pareja):
 
 #Falta probar
 def cancelWithNoPenalty(id_partido:int):
-    url = f"{base_url}saveCancelacion"
+    url = f"{base_url}cancelWithNoPenalty"
     data = {'idPartido': id_partido}
     response = requests.post(url, data)
     return response.json()
@@ -63,4 +67,6 @@ def cancelWithNoPenalty(id_partido:int):
 def getParejaId(uidSender:int, idPartido:int):
     url = f"{base_url}getParejaId/{uidSender}/{idPartido}"
     response = requests.get(url)
+    print('Response del back: ')
+    print(response)
     return response.json()

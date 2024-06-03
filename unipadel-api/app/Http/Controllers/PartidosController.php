@@ -307,4 +307,19 @@ class PartidosController extends Controller
         $horario = Horario::where('id', intval($horario_id))->first();
         return response()->json($horario);
     }
+
+    public function isPartidoWithHorario($idPartido) {
+        $partido = Partido::where('id', $idPartido)->first();
+        $is = 1;
+        if ($partido->horario_id == NULL) {
+            $is = 0;
+            return response()->json([
+                'is' => $is
+            ]);
+        }
+
+        return response()->json([
+            'is' => $is 
+        ]);
+    }
 }

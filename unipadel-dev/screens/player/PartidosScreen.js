@@ -34,7 +34,7 @@ const PartidosScreen = () => {
 
   useEffect(() => {
     loadPartidos();
-  }, [isFocusing]);
+  }, [isFocusing], );
 
   const renderItem = ({ item }) => {
     console.log("Log del renderItem : " + item.id);

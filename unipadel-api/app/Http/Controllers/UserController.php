@@ -12,6 +12,7 @@ use App\Models\Partido;
 use App\Models\Cancelacion;
 use App\Models\Horario;
 use App\Http\Controllers\TorneoController;
+use Carbon\Carbon;
 
 class UserController extends Controller
 {
@@ -138,16 +139,6 @@ class UserController extends Controller
         return "No se encontro";        
     }
 
-    public function isPartidoWithHorario($idPartido) {
-        $partido = Partido::where('id', $idPartido)->first();
-
-        if ($partido->horario_id == NULL) {
-            return FALSE;
-        }
-
-        return TRUE;
-    }
-
 
     //Obtener cancelaciones relacionadas a un usuario organizador
     public function getCancelaciones($idUser) {
@@ -214,8 +205,8 @@ class UserController extends Controller
         $cancelacion = new Cancelacion();
         $cancelacion->idPareja = $request->idPareja;
         $cancelacion->idPartido = $request->idPartido;
-        $cancelacion->date = date('Y-m-d H:i'); //modificar como se hizo en los otros metodos para que no de error de conversion
-        $cancelacion->estado = $request->estado;
+        $cancelacion->date = Carbon::now()->toDateTimeString(); //modificar como se hizo en los otros metodos para que no de error de conversion
+        $cancelacion->estado = 0;
         $cancelacion->save();
     
         return response()->json([
@@ -240,14 +231,10 @@ class UserController extends Controller
 
     public function getParejaId($uidSender, $idPartido) {
         $integrantes = Integrante::where('id_jugador', $uidSender)->get();
-
-        print($integrantes);
-
         
         $partido = Partido::where('id', $idPartido)->first();
         $idPareja = 0;
         foreach ($integrantes as $integrante) {
-            print($integrante->id_pareja);
             if ($integrante->id_pareja == $partido->p1 or $partido->p2) {
                 $idPareja = $integrante->id_pareja;
             }

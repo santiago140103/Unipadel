@@ -67,8 +67,11 @@ const ChatPartido = () => {
             let requestChatBot = {
                 mensaje: mensajeParaChatbot,
                 idTorneo: idTorneo,
-                idPartido: route.params
+                idPartido: route.params,
+                uidSender: usercontext.user.id
             };
+            console.log('Request para el chatbot: ')
+            console.log(requestChatBot);
             console.log(mensajeParaChatbot);
             await chatBot(requestChatBot);
             await actualizarMensajes();
