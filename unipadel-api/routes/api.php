@@ -71,6 +71,7 @@ Route::get('getUserById/{idUser}', [UserController::class, 'getUserById']);
 Route::get('getParejaIdByUserIdAndPartidoId/{idPartido}/{uidSender}', [UserController::class, 'getParejaIdByUserIdAndPartidoId']);
 
 Route::get('isPartidoWithHorario/{idPartido}', [PartidosController::class, 'isPartidoWithHorario']);
+Route::get('getFullPartido/{idPartido}', [PartidosController::class, 'getFullPartido']);
 Route::get('getParejaData/{idPareja}', [UserController::class, 'getParejaData']);
 Route::get('getUsuariosCancelacion/{idPareja}', [UserController::class, 'getUsuariosCancelacion']);
 

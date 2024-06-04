@@ -322,5 +322,10 @@ class PartidosController extends Controller
             'is' => $is 
         ]);
     }
+
+    public function getFullPartido($idPartido) {
+        $partido = Partido::where('id', $idPartido)->first();
+        return response()->json($partido);
+    }
     
 }

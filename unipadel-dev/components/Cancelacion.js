@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import { useRoute, useIsFocused } from '@react-navigation/native';
-import { getUsuariosCancelacion, updateEstadoCancelacion } from '../api';
+import { getUsuariosCancelacion, updateEstadoCancelacion, getFullPartido, getTorneos } from '../api';
 import colores from '../colors.js';
 
 const Cancelacion = ({ cancelacion }) => {
     const [cancelacionUsers, setCancelacionUsers] = useState([]); 
+    const [torneo, setTorneo] = useState(""); 
     const [loading, setLoading] = useState(false);
     const isFocused = useIsFocused();
 
@@ -15,6 +16,9 @@ const Cancelacion = ({ cancelacion }) => {
         try {
             const data = await getUsuariosCancelacion(cancelacion.idPareja); 
             setCancelacionUsers(data.data);
+            const partidoData = await getFullPartido(cancelacion.idPartido);
+            const torneoData = await getTorneos(partidoData.data.torneo_id);
+            setTorneo(torneoData.data.nombre);
         } catch (error) {
             console.error('Error fetching usuarios cancelaciones:', error);
         } finally {
@@ -30,7 +34,7 @@ const Cancelacion = ({ cancelacion }) => {
                 estado:1
             }
             const data = await updateEstadoCancelacion(request);
-            obtenerUsuarios();
+            cancelacion.estado = 1;
         } catch (error) {
             console.error('Error actualizando el estado de la cancelacion:', error);
         } finally {
@@ -47,20 +51,25 @@ const Cancelacion = ({ cancelacion }) => {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Torneo Verano LP - Jornada 2</Text>
+            <Text style={styles.title}>{torneo}</Text>
             <ScrollView>
                 {cancelacionUsers.map(user => (
                     <TouchableOpacity key={user.id} style={styles.card}>
                         <Text style={styles.userInfo}>{user.name}</Text>
                         <Text style={styles.userInfo}>{user.email}</Text>
-                        <Text style={styles.userInfo}>{cancelacion.estado}</Text>
                     </TouchableOpacity>
                 ))}
+                <Text style={styles.userInfo}>{cancelacion.date}</Text>
             </ScrollView>
-            <TouchableOpacity style={styles.gestionarButton}
+            {cancelacion.estado == 0 ? (
+                <TouchableOpacity style={styles.gestionarButton}
                 onPress = {() => marcarComoGestionada()}>
                 <Text style={styles.gestionarButtonText}>Marcar como gestionada</Text>
             </TouchableOpacity>
+            ) : (
+                <Text style={styles.gestionadaText}>Cancelación gestionada</Text>
+            )}
+            
         </View>
     );
 };
@@ -104,6 +113,15 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         fontSize: 16,
     },
+
+    gestionadaText: {
+        color: '#28A745',
+        fontWeight: 'bold',
+        fontSize: 16,
+        textAlign: 'center',
+        marginTop: 20,
+    },
+
 });
 
 export default Cancelacion;

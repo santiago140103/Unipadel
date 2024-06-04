@@ -187,8 +187,12 @@ export const getUserById = async (idUser) => {
   return await axios.get(`${api}getUserById/${idUser}`);
 } 
 
-export const getUsuariosCancelacion = async (idPareja, idPartido) => {
+export const getUsuariosCancelacion = async (idPareja) => {
   return await axios.get(`${api}getUsuariosCancelacion/${idPareja}`)
+}
+
+export const getFullPartido = async (idPartido) => {
+  return await axios.get(`${api}getFullPartido/${idPartido}`)
 }
 
 //Chat bot
