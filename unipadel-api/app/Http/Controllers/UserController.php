@@ -218,8 +218,7 @@ class UserController extends Controller
 
     //Modificar el estado de una cancelacion 
     public function updateEstadoCancelacion(Request $request) {
-        $cancelaciones = Cancelacion::where('id', $request->id)->get();
-        $cancelacion = $cancelaciones[0];
+        $cancelacion = Cancelacion::where('id', $request->id)->first();
         $cancelacion->estado = $request->estado;
         $cancelacion->save();
 

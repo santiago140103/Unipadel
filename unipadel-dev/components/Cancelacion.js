@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import { useRoute, useIsFocused } from '@react-navigation/native';
-import { getUsuariosCancelacion } from '../api';
+import { getUsuariosCancelacion, updateEstadoCancelacion } from '../api';
 import colores from '../colors.js';
 
 const Cancelacion = ({ cancelacion }) => {
@@ -19,10 +19,24 @@ const Cancelacion = ({ cancelacion }) => {
             console.error('Error fetching usuarios cancelaciones:', error);
         } finally {
             setLoading(false);
-            console.log('Users: ');
-            console.log(cancelacionUsers);
         }
     }, [cancelacion.idPareja]);
+
+    const marcarComoGestionada = useCallback(async () => {
+        setLoading(true);
+        try {
+            const request = {
+                id:cancelacion.id,
+                estado:1
+            }
+            const data = await updateEstadoCancelacion(request);
+            obtenerUsuarios();
+        } catch (error) {
+            console.error('Error actualizando el estado de la cancelacion:', error);
+        } finally {
+            setLoading(false);
+        }
+    },);
 
 
     useEffect(() => {
@@ -39,11 +53,13 @@ const Cancelacion = ({ cancelacion }) => {
                     <TouchableOpacity key={user.id} style={styles.card}>
                         <Text style={styles.userInfo}>{user.name}</Text>
                         <Text style={styles.userInfo}>{user.email}</Text>
+                        <Text style={styles.userInfo}>{cancelacion.estado}</Text>
                     </TouchableOpacity>
                 ))}
             </ScrollView>
-            <TouchableOpacity style={styles.gestionarButton}>
-                <Text style={styles.gestionarButtonText}>Gestionar</Text>
+            <TouchableOpacity style={styles.gestionarButton}
+                onPress = {() => marcarComoGestionada()}>
+                <Text style={styles.gestionarButtonText}>Marcar como gestionada</Text>
             </TouchableOpacity>
         </View>
     );
