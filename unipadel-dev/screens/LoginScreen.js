@@ -55,6 +55,7 @@ const LoginScreen = () => {
   }, [user]);
 
   const handleLogin = () => {
+    console.log('Entra');
     auth.signInWithEmailAndPassword(email, password)
     .then((res) => {
       setUser(res);

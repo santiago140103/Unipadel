@@ -38,7 +38,7 @@ const RegisterScreen = () => {
         const res = await attemptLogin(user.email);
         if (res.data.data != null) {
           usuarioContext.setUser(res.data.data);
-          if (res.data.data.tipo === 1) {
+          if (res.data.data.tipo == 1) {
             console.log('Tipo: ' + res.data.data.tipo);
             navigation.replace("OrganizerHome");
           } else {

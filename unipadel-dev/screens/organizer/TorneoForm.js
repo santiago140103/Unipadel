@@ -29,6 +29,7 @@ const TorneoForm = () => {
   const [jugadores, setJugadores] = useState("");
   const [precio, setPrecio] = useState("");
   const [descripcion, setDescripcion] = useState("");
+  const [politica_cancelacion, setPoliticaCancelacion] = useState("");
   // const [activo, setActivo] = useState(false);
 
   const [showI, setShowI] = useState(false);
@@ -51,6 +52,7 @@ const TorneoForm = () => {
     fecha_fin: fin ? moment(fin).format('YYYY-MM-DDTHH:mm:ss') : '',
     fecha_limite: limite ? moment(limite).format('YYYY-MM-DDTHH:mm:ss') : '',
     organizador: organizador,
+    politica_cancelacion: politica_cancelacion,
   };
 
   const onChangeI = (event, selectedDate) => {
@@ -266,6 +268,17 @@ const TorneoForm = () => {
             style={styles.input}
             multiline={true}
             numberOfLines={4}
+          />
+        </View>
+        {/* POLITICA DE CANCELACION */}
+        <View style={styles.inputContainer}>
+          <Text style={styles.label}>Politica de cancelacion</Text>
+          <TextInput
+            placeholder="Numero de horas minimo para cancelar sin que haya penalizacion"
+            value={politica_cancelacion}
+            onChangeText={(text) => setPoliticaCancelacion(text)}
+            style={styles.input}
+            keyboardType="numeric"
           />
         </View>
 
