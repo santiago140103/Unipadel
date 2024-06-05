@@ -190,7 +190,6 @@ class TorneoController extends Controller
             $fecha_inicio = Carbon::createFromFormat('Y-m-d H:i:s', '2024-07-08 10:00:00')->format('Y-m-d H:i:s.000');
             $fecha_inicio = strtotime($h['fechaInicio']);
             $fecha_fin = strtotime($h['fechaFin']);
-            print_r($fecha_inicio);
             $turno = $this->getDuracionTurno($h['inicio'], $h['fin'], $h['turnos']);
 
             $hora = $h['inicio'];
@@ -199,7 +198,6 @@ class TorneoController extends Controller
 
             if ($h['lunes']) {
                 $recursos = $this->createRecursosDay($fecha_inicio, $fecha_fin, $hora, $turnos, $turno, 'monday', $fecha_inicio_torneo, $fecha_fin_torneo);
-                print_r($recursos);
                 foreach ($recursos as $recurso) {
                     array_push($horarios, $recurso);
                 }
@@ -249,13 +247,10 @@ class TorneoController extends Controller
                 $formattedInicio = str_replace(' ', 'T', $formattedInicio);
                 $formattedFin = Carbon::parse($horario['fin'])->format('Y-m-d H:i:s.000');
                 $formattedFin = str_replace(' ', 'T', $formattedFin);
-                print_r("\nInicio formateado: " . $formattedInicio . "\nFin formateado: " . $formattedFin);
 
 
                 $hor->inicio = $formattedInicio; //date('Y-m-d H:i:s', strtotime($horario['inicio']));
                 $hor->fin = $formattedFin; //date('Y-m-d H:i:s', strtotime($horario['fin']));
-                print_r('Horario inicio: ' . $hor->inicio);
-                print_r('Horario fin: ' . $hor->fin);
                 $hor->save();
             }
         }
@@ -283,7 +278,6 @@ class TorneoController extends Controller
                 array_push($horarios, $horario);
             }
         }
-        print_r($horarios);
         return $horarios;
     }
 

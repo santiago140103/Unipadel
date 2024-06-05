@@ -9,20 +9,68 @@ from context.backend_api_connector import *
 #orca-2-7b.Q4_0.gguf = Responde en ingles
 #mistral-7b-openorca.gguf2.Q4_0.gguf
 
-"""
-#========================Model configurations===========================================
-model_name="mistral-7b-openorca.gguf2.Q4_0.gguf"
-model = GPT4All(model_name, device="gpu", n_ctx=2048, ngl=28, n_threads=6, verbose=True)
-"""
-
-
+#=========================API=====================================================
 app = Flask(__name__)
 api = Api(app, version='1.0', title='ChatBot API', description='API para la gestión de reservas por parte de los usuarios.')
 
 
+#========================Model configurations===========================================
+model_name="mistral-7b-openorca.gguf2.Q4_0.gguf"
+model = GPT4All(model_name, device="gpu", n_ctx=2048, ngl=28, n_threads=6, verbose=False)
+
+#=========================MODEL FUNCTIONS AND PARAMETERS================================================
+
+def get_model_answer(horarios_lista:list, mensaje:str):
+
+    #Se hacen los horarios lo mas simplificado posible para el chatbot y su respuesta
+    horarios = transformar_horarios(horarios_lista)
+    horarios_disponibles_str = ', '.join(horarios)
+
+    #El prompt del chatbot
+    objetivo = f"Eres una inteligencia artificial diseñada para ayudar a los usuarios a obtener información sobre la disponibilidad de horarios. " \
+           f"Los únicos horarios disponibles son: {horarios_disponibles_str}. Si el usuario te pregunta por un horario que no está disponible, " \
+           "debes responderle 'No hay horarios disponibles en esa fecha'."
+
+    system_template = objetivo
+
+    #chat
+    with model.chat_session(system_template):
+        print('Cargando primera respuesta')
+
+        #Se hace una primera pregunta automatica con los horarios para el contexto del modelo
+        initial_prompt = f"Respondeme en español. Los ÚNICOS horarios disponibles son: {horarios_disponibles_str}\n"
+        response1 = model.generate(initial_prompt)
+        print("Primera respuesta " + response1)
+
+        #Se hace la pregunta del usuario
+        prompt = f"{initial_prompt} Usuario: {mensaje}\nRespuesta: "
+        response2 = model.generate(prompt, max_tokens=300)
+        print('Response 2: ' + response2)
+        return extraer_respuesta(response2)
+
+def transformar_horarios(horarios):
+    resultado = []
+    for horario in horarios:
+        inicio_dt = datetime.datetime.strptime(horario["inicio"], "%Y-%m-%d %H:%M:%S.%f")
+        fecha_formateada = inicio_dt.strftime('%A %d/%m/%Y %H:%M')
+        cadena_final = f"{fecha_formateada} - {horario['cancha']['nombre']}"
+        resultado.append(cadena_final)
+    return resultado
+
+def extraer_respuesta(texto):
+
+    partes = texto.split('Respuesta: ', 1)
+
+    if len(partes) > 1:
+        respuesta = partes[1].strip()
+    else:
+        respuesta = texto
+
+    return respuesta
+
 
 #==========================Controller==============================
-#Estructura del body: mensaje, idtorneo, idpartido, idUsuaio
+#Estructura del body: mensaje, idtorneo, idpartido, uidSender
 @api.route(f"/api/chat")
 class MessageController(Resource):
 
@@ -42,25 +90,27 @@ class MessageController(Resource):
 def handleMessage(data):
     
     result, answer = manage_auto_response(data)
-    #if result:
-    if isinstance(answer, str):
-        print(answer)
-        saveMensaje(data['idPartido'], answer)
-        return {'message': answer}
+    if result:
+        if isinstance(answer, str):
+            print(answer)
+            saveMensaje(data['idPartido'], answer)
+            return {'message': answer}
+        return answer
     
+    else:
+        
+        horarios_lista = get_availability(data['idTorneo'])
+        chatbot_answer = get_model_answer(horarios_lista, data['mensaje'])
+        return {'message': chatbot_answer}
     
-    
-    return answer
-    #else:
-
-        #with model.chat_session(system_template, prompt_template):
-            #response1 = model.generate(question)
-
-        #return #response1
-    
-    #result, answer = manage_auto_response(message)
-    saveMensaje(data['idPartido'], answer)
-    return 
+def getSystemTemplate(id_torneo):
+    horarios_disponibles = get_availability(id_torneo)
+    objetivo =  "INSTRUCTION: Eres una inteligencia artificial diseñada para ayudar a los usuarios a obtener información sobre la disponibilidad de horarios " \
+                "disponibles. Si el usuario te pregunta por alglun horario debes responderle con estos horarios disponibles: " + str(horarios_disponibles) + ". Si " \
+                "el horario por el que pregunta no esta disponible debes responderle 'No hay horarios disponibles en esa fecha'. Las preguntas serán hechas en el siguiente" \
+                "formato: Primero te daré los horarios disponibles, luego te diré la pregunta del usuario que irá seguida del texto 'Usuario: '. Solo debes responder " \
+                "a la pregunta del usuario, lo que te dé antes es simplemente información para responder la pregunta."
+    return objetivo
 
 def manage_auto_response(data):
     key_words = data['mensaje'].split()
