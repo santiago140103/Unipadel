@@ -101,6 +101,7 @@ def handleMessage(data):
         
         horarios_lista = get_availability(data['idTorneo'])
         chatbot_answer = get_model_answer(horarios_lista, data['mensaje'])
+        saveMensaje(data['idPartido'], chatbot_answer)
         return {'message': chatbot_answer}
     
 def getSystemTemplate(id_torneo):
