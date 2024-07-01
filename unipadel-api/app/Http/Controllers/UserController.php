@@ -66,7 +66,7 @@ class UserController extends Controller
     }
 
     public function createPareja(Request $request){
-        print_r("Este es el nombre de la pareja: " . $request);
+        
         $pareja = new Pareja();
         $pareja->nombre = $request->nombre;
         $pareja->save();
@@ -220,6 +220,17 @@ class UserController extends Controller
     public function updateEstadoCancelacion(Request $request) {
         $cancelacion = Cancelacion::where('id', $request->id)->first();
         $cancelacion->estado = $request->estado;
+        $cancelacion->save();
+
+        return response()->json([
+            'status' => 200,
+            'message' => 'Cancelacion actualizada correctamente',
+        ]);
+    }
+
+    public function updateComentarioCancelacion(Request $request) {
+        $cancelacion = Cancelacion::where('id', $request->id)->first();
+        $cancelacion->comentario = $request->comentario;
         $cancelacion->save();
 
         return response()->json([

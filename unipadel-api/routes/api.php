@@ -62,6 +62,7 @@ Route::post('saveMensaje', [UserController::class, 'saveMensaje']);
 Route::get('getCancelaciones/{idUser}', [UserController::class, 'getCancelaciones']);
 Route::post('saveCancelacion', [UserController::class, 'saveCancelacion']);
 Route::put('updateEstadoCancelacion', [UserController::class, 'updateEstadoCancelacion']);
+Route::put('updateComentarioCancelacion', [UserController::class, 'updateComentarioCancelacion']);
 Route::get('getHorarioPartido/{idPartido}', [PartidosController::class, 'getHorarioPartido']);
 Route::post('cancelWithNoPenalty', [UserController::class, 'cancelWithNoPenalty']);
 

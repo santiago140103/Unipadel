@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext, useRef } from 'react';
-import { View, TouchableOpacity, Text, StyleSheet, KeyboardAvoidingView, TextInput, FlatList, Platform } from 'react-native';
+import { View, TouchableOpacity, Text, StyleSheet, KeyboardAvoidingView, TextInput, FlatList, Platform, Modal } from 'react-native';
 import { useRoute, useIsFocused } from "@react-navigation/native";
 import Mensaje from "../../components/Mensaje";
 import { chatBot, getMensajesPartido, saveMensaje, getTorneoIdWithPartidoId } from '../../api';
@@ -12,7 +12,9 @@ const ChatPartido = () => {
     const isFocusing = useIsFocused();
     const usercontext = useContext(UserContext);
     const flatListRef = useRef(null);
-
+    const guiaChatbot = "Para utilizar el chatbot se debe poner al principio del mensaje el texto '@chatbot'. A partir de ahí hay varios comandos: 'Disponibilidad' te da la disponibilidad del torneo. 'Reservar yyyy-mm-dd hh:mm'. Debe ser un horario que esté disponible. 'Cancelar' para cancelar un partido.";
+    const [modalVisible, setModalVisible] = useState(false);
+    
     const getMensajes = async () => {
         const data = await getMensajesPartido(route.params);
         setMensajes(data.data);
@@ -78,6 +80,16 @@ const ChatPartido = () => {
         }
     };
 
+    const mensajeAyuda = async () => {
+        let request = {
+            content: guiaChatbot,
+            idPartido: route.params,
+            uidSender: usercontext.user.id
+        };
+        await saveMensaje(request);
+        await actualizarMensajes();
+    } 
+
     return (
         <KeyboardAvoidingView
             style={styles.container}
@@ -86,6 +98,9 @@ const ChatPartido = () => {
         >
             <View style={styles.header}>
                 <Text style={styles.headerText}>Chat</Text>
+                <TouchableOpacity style={styles.helpButton} onPress={() => setModalVisible(true)}>
+                    <Text style={styles.helpButtonText}>?</Text>
+                </TouchableOpacity>
             </View>
 
             <FlatList
@@ -108,6 +123,26 @@ const ChatPartido = () => {
                     <Text style={styles.sendButtonText}>Enviar</Text>
                 </TouchableOpacity>
             </View>
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={modalVisible}
+                onRequestClose={() => {
+                    setModalVisible(!modalVisible);
+                }}
+            >
+                <View style={styles.modalContainer}>
+                    <View style={styles.modalView}>
+                        <Text style={styles.modalText}>{guiaChatbot}</Text>
+                        <TouchableOpacity
+                            style={[styles.button, styles.buttonClose]}
+                            onPress={() => setModalVisible(!modalVisible)}
+                        >
+                            <Text style={styles.textStyle}>Cerrar</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            </Modal>
         </KeyboardAvoidingView>
     );
 };
@@ -169,6 +204,51 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
         marginRight: 10,
         height: 40,
+    },
+
+    modalContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0,0,0,0.5)',
+    },
+    modalView: {
+        margin: 20,
+        backgroundColor: 'white',
+        borderRadius: 20,
+        padding: 35,
+        alignItems: 'center',
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5,
+    },
+    modalText: {
+        marginBottom: 15,
+        textAlign: 'center',
+    },
+
+    helpButton: {
+        backgroundColor: 'lightgreen',
+        padding: 10,
+        borderRadius: 20,
+    },
+    helpButtonText: {
+        fontSize: 18,
+        fontWeight: 'bold',
+    },
+
+    button: {
+        borderRadius: 20,
+        padding: 10,
+        elevation: 2,
+    },
+    buttonClose: {
+        backgroundColor: 'lightgreen',
     },
 });
 

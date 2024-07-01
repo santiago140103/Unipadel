@@ -195,6 +195,10 @@ export const getFullPartido = async (idPartido) => {
   return await axios.get(`${api}getFullPartido/${idPartido}`)
 }
 
+export const updateComentarioCancelacion = async (request) => {
+  return await axios.put(`${api}updateComentarioCancelacion/`, request);
+}
+
 //Chat bot
 export const chatBot = async (request) => {
   console.log('chatbot');
