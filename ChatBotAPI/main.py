@@ -16,21 +16,19 @@ api = Api(app, version='1.0', title='ChatBot API', description='API para la gest
 
 #========================Model configurations===========================================
 model_name="mistral-7b-openorca.gguf2.Q4_0.gguf"
-model = GPT4All(model_name, device="gpu", n_ctx=2048, ngl=28, n_threads=6, verbose=False)
+model = GPT4All(model_name, device="gpu", ngl=28, n_threads=6, verbose=False)
 
 #=========================MODEL FUNCTIONS AND PARAMETERS================================================
 
 def get_model_answer(horarios_lista:list, mensaje:str):
-
+    """Devuelve la string de la respuesta del modelo"""
     #Se hacen los horarios lo mas simplificado posible para el chatbot y su respuesta
     horarios = transformar_horarios(horarios_lista)
     horarios_disponibles_str = ', '.join(horarios)
 
     #El prompt del chatbot
     objetivo = f"Eres una inteligencia artificial diseñada para ayudar a los usuarios a obtener información sobre la disponibilidad de horarios. " \
-           f"Los únicos horarios disponibles son: {horarios_disponibles_str}. Si el usuario te pregunta por un horario que no está disponible, " \
-           "debes responderle 'No hay horarios disponibles en esa fecha'."
-
+           f"Los únicos horarios disponibles son: {horarios_disponibles_str}. Si el usuario te pregunta por un horario que no está disponible, debes responderle 'No hay horarios disponibles en esa fecha'."
     system_template = objetivo
 
     #chat
@@ -40,12 +38,10 @@ def get_model_answer(horarios_lista:list, mensaje:str):
         #Se hace una primera pregunta automatica con los horarios para el contexto del modelo
         initial_prompt = f"Respondeme en español. Los ÚNICOS horarios disponibles son: {horarios_disponibles_str}\n"
         response1 = model.generate(initial_prompt)
-        print("Primera respuesta " + response1)
 
         #Se hace la pregunta del usuario
         prompt = f"{initial_prompt} Usuario: {mensaje}\nRespuesta: "
-        response2 = model.generate(prompt, max_tokens=300)
-        print('Response 2: ' + response2)
+        response2 = model.generate(prompt)
         return extraer_respuesta(response2)
 
 def transformar_horarios(horarios):
@@ -168,13 +164,16 @@ def check_disponibilidad_format(mensaje):
 
 
 def book(data):
+    """Esta funcion se encarga de reservar un horario para un partido determinado"""
     #chequear el formato
     if check_reservar_format(data['mensaje']) == False:
         return "El formato para reservar es 'Reservar yyyy-mm-dd hh:mm'"
     
     #chequear si el partido ya tiene reserva 
     if (isPartidoWithHorario(data['idPartido'])):
-        return "El partido ya tiene un horario. Si quieres cambiar el horario debes cancelarlo primero, sabiendo que si incumples la politica de cancelacion debes contactar al organizador."
+        return "El partido ya tiene un horario. Si quieres cambiar el horario debes cancelarlo" \
+        "primero, sabiendo que si incumples la politica de cancelacion debes contactar al" \
+        "organizador."
     key_words = data['mensaje'].split(' ')
 
     #Obtener la disponibilidad del dia
@@ -191,9 +190,11 @@ def book(data):
         if horario['inicio'] == horario_proporcionado:
             id = horario['id']
 
-    #Si el id sigue siendo 0 devolver que el horario no esta disponible o no existe y devolver los horarios disponibles
+    #Si el id sigue siendo 0 devolver que el horario no esta disponible o no existe 
+    # y devolver los horarios disponibles
     if id == 0:
-        return f"El horario proporcionado para ese dia no existe o no esta disponible. Los horarios disponibles para ese dia son:\n{str_horarios(horarios)}"
+        return f"El horario proporcionado para ese dia no existe o no esta disponible. Los \ 
+        horarios disponibles para ese dia son:\n{str_horarios(horarios)}"
     
     #Hacer la reserva
     response = setHorarioPartido(id, data['idPartido'])

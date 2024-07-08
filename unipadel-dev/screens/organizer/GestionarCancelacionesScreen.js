@@ -42,8 +42,7 @@ const GestionarCancelaciones = () => {
   }, [route.params]);
 
   const filtrarPorEstado = (estado) => {
-    console.log('Estado: ');
-    console.log(estado);
+    
     if (estado == 2) {
       setCancelaciones(cancelacionesCopia);
       return;
@@ -57,16 +56,15 @@ const GestionarCancelaciones = () => {
         const dateB = new Date(b.date.replace(" ", "T"));
 
         if (orden === 0) { //ascendente
-            console.log('Entro');
             return dateA - dateB;
         } else if (orden === 1) { //descendente
             return dateB - dateA;
         }
         
-        return 0; // default case (no sorting if orden is not 'asc' or 'desc')
+        return 0; //caso en el que no es ni ascendente ni descendente
     });
     setCancelaciones(sortedCancelaciones);
-}
+  }
 
   useEffect(() => {
     if (isFocused && !loading) {

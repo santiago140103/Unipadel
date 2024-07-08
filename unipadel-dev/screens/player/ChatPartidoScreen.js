@@ -12,7 +12,7 @@ const ChatPartido = () => {
     const isFocusing = useIsFocused();
     const usercontext = useContext(UserContext);
     const flatListRef = useRef(null);
-    const guiaChatbot = "Para utilizar el chatbot se debe poner al principio del mensaje el texto '@chatbot'. A partir de ahí hay varios comandos: 'Disponibilidad' te da la disponibilidad del torneo. 'Reservar yyyy-mm-dd hh:mm'. Debe ser un horario que esté disponible. 'Cancelar' para cancelar un partido.";
+    const guiaChatbot = "Para utilizar el chatbot se debe poner al principio del mensaje el texto '@chatbot'. A partir de ahí hay varios comandos: 'Disponibilidad' te da la disponibilidad del torneo. 'Disponibilidad yyyy-mm-dd' devuelve la disponibilidad de horarios para ese día. 'Reservar yyyy-mm-dd hh:mm'. Debe ser un horario que esté disponible. 'Cancelar' para cancelar un partido.";
     const [modalVisible, setModalVisible] = useState(false);
     
     const getMensajes = async () => {
